@@ -122,6 +122,7 @@ public class Main extends JPanel
 			if ((evt.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
 			{
 				initTargetsList();
+
 			}
 		}
 	};
