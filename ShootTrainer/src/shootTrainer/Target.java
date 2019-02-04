@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 public final class Target
 {
 	private Point drawP;
-	private Point actualP;
 	private Point deltaMove;
 	// Radius attributes
 	private double radius;
@@ -64,19 +63,11 @@ public final class Target
 		this.maxRadius = maxRadius;
 	}
 
-	private void reCalcDrawPoint()
-	{
-		this.drawP.x = (int) (drawP.getX() - (radius));
-		this.drawP.y = (int) (drawP.getY() - (radius));
-	}
-
 	private void init(Point inP, int radius, Color c)
 	{
 		drawP = inP;
-		actualP = (Point) inP.clone();
 		this.radius = radius;
 		this.c = c;
-		reCalcDrawPoint();
 
 		// Defaults
 		// no move for target
@@ -104,9 +95,6 @@ public final class Target
 		// update both points for target
 		drawP.x += deltaMove.x;
 		drawP.y += deltaMove.y;
-
-		actualP.x += deltaMove.x;
-		actualP.y += deltaMove.y;
 
 	}
 
@@ -141,16 +129,18 @@ public final class Target
 
 		// Draw target
 		g.setColor(this.c);
-		g.fillArc(drawP.x, drawP.y, (int) getDiameter(), (int) getDiameter(), 0, 360);
+		g.fillArc(drawP.x - (int) radius, drawP.y - (int) radius, (int) getDiameter(), (int) getDiameter(), 0, 360);
+
+		// debug info
 		g.setColor(Color.MAGENTA);
-		g.drawLine(drawP.x, drawP.y, actualP.x, actualP.y);
+		g.drawRect(drawP.x - (int) radius, drawP.y - (int) radius, (int) getDiameter(), (int) getDiameter());
 	}
 
 	public boolean determineIfTargetIsHit(int shootX, int shootY)
 	{
 		boolean retval = false;
 
-		double distance = actualP.distance(shootX, shootY);
+		double distance = drawP.distance(shootX, shootY);
 		if (distance < radius)
 		{
 			retval = true;
@@ -161,13 +151,13 @@ public final class Target
 		System.out.print("Shoot(" + shootX + "," + shootY + ")");
 		if (retval)
 		{
-			System.out.println(" Hit!");
+			System.out.println(" Hit! Radius :" + radius + " ");
 		} else
 		{
 			System.out.println(" No hit...");
 		}
 
-		System.out.println("Distance : " + actualP.distance(shootY, shootY));
+		System.out.println("Distance : " + drawP.distance(shootY, shootY));
 		return retval;
 	}
 

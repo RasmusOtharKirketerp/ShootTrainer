@@ -29,27 +29,41 @@ public class Main extends JPanel
 
 	static ArrayList<Target> allTargets = new ArrayList<Target>();
 
-	public Main()
+	static public void initTargetsList()
 	{
+		allTargets.removeAll(allTargets);
+
+		// test case #1 - Stand still
 		Target newTarget = new Target(new Point(30, 400), 30, Color.GREEN);
 		newTarget.setDeltaMove(new Point(0, 0));
 		allTargets.add(newTarget);
 
-		Target newTarget2 = new Target(new Point(300, 350), 50, Color.GREEN);
-		newTarget2.setDeltaMove(new Point(1, -1));
+		// test case #2 - move
+		Target newTarget2 = new Target(new Point(100, 100), 100, Color.GREEN);
+		newTarget2.setDeltaMove(new Point(0, 1));
 		allTargets.add(newTarget2);
 
-		Target newTarget3 = new Target(new Point(400, 400), 301, Color.GREEN);
+		// test case #3 - stand still and change size
+		Target newTarget3 = new Target(new Point(400, 400), 100, Color.GREEN);
 		newTarget3.setDeltaMove(new Point(0, 0));
 		newTarget3.setMaxRadius(290);
 		newTarget3.setMinRadius(10);
-		newTarget3.setDeltaRadius(1.005);
-
+		newTarget3.setDeltaRadius(1.001);
 		allTargets.add(newTarget3);
 
-		Target newTarget4 = new Target(new Point(1100, 600), 100, Color.GREEN);
-		newTarget4.setDeltaMove(new Point(-1, -1));
+		// test case #4 - move and change size
+		Target newTarget4 = new Target(new Point(400, 600), 100, Color.GREEN);
+		newTarget4.setDeltaMove(new Point(1, 1));
+		newTarget4.setMaxRadius(290);
+		newTarget4.setMinRadius(10);
+		newTarget4.setDeltaRadius(1.001);
 		allTargets.add(newTarget4);
+
+	}
+
+	public Main()
+	{
+		initTargetsList();
 	}
 
 	static LokalKoordinatsystem aScreen = new LokalKoordinatsystem(GetScreenWorkingWidth() - 400,
@@ -104,6 +118,10 @@ public class Main extends JPanel
 
 				}
 
+			}
+			if ((evt.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
+			{
+				initTargetsList();
 			}
 		}
 	};
