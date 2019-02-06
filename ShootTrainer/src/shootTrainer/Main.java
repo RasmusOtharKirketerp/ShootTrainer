@@ -15,19 +15,39 @@ import javax.swing.JPanel;
 
 public class Main extends JPanel
 {
+	public Main()
+	{
+		// initTargetsList();
+		initRandomTargetList();
+	}
+
 	private static final long serialVersionUID = 1L;
 
-	public static int GetScreenWorkingWidth()
+	public static int getScreenWorkingWidth()
 	{
 		return java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
 	}
 
-	public static int GetScreenWorkingHeight()
+	public static int getScreenWorkingHeight()
 	{
 		return java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
 	}
 
-	static ArrayList<Target> allTargets = new ArrayList<Target>();
+	public static ArrayList<Target> allTargets = new ArrayList<Target>();
+
+	static public void initRandomTargetList()
+	{
+		allTargets.removeAll(allTargets);
+		int count = 5;
+
+		//
+		for (int i = 1; i <= count; i++)
+		{
+			Target newTarget = new Target();
+			allTargets.add(newTarget);
+		}
+
+	}
 
 	static public void initTargetsList()
 	{
@@ -43,31 +63,41 @@ public class Main extends JPanel
 		newTarget2.setDeltaMove(new Point(0, 1));
 		allTargets.add(newTarget2);
 
-		// test case #3 - stand still and change size
-		Target newTarget3 = new Target(new Point(400, 400), 100, Color.GREEN);
+		// test case #3 - stand still and change to bigger size
+		Target newTarget3 = new Target(new Point(400, 400), 10, Color.GREEN);
 		newTarget3.setDeltaMove(new Point(0, 0));
-		newTarget3.setMaxRadius(290);
+		newTarget3.setMaxRadius(60);
 		newTarget3.setMinRadius(10);
-		newTarget3.setDeltaRadius(1.001);
+		newTarget3.setDeltaRadius(1.005);
 		allTargets.add(newTarget3);
+
+		// test case #3.1 - stand still and change to smaller size
+		Target newTarget5 = new Target(new Point(600, 800), 100, Color.GREEN);
+		newTarget5.setDeltaMove(new Point(0, 0));
+		newTarget5.setMaxRadius(190);
+		newTarget5.setMinRadius(10);
+		newTarget5.setDeltaRadius(0.995);
+		allTargets.add(newTarget5);
 
 		// test case #4 - move and change size
 		Target newTarget4 = new Target(new Point(400, 600), 100, Color.GREEN);
-		newTarget4.setDeltaMove(new Point(1, 1));
-		newTarget4.setMaxRadius(290);
+		newTarget4.setDeltaMove(new Point(2, -1));
+		newTarget4.setMaxRadius(130);
 		newTarget4.setMinRadius(10);
-		newTarget4.setDeltaRadius(1.001);
+		newTarget4.setDeltaRadius(1.003);
 		allTargets.add(newTarget4);
 
+		// test case ## - move and change size
+		Target newTarget6 = new Target(new Point(1100, 600), 50, Color.MAGENTA);
+		newTarget6.setDeltaMove(new Point(-2, 0));
+		newTarget6.setMaxRadius(230);
+		newTarget6.setMinRadius(10);
+		newTarget6.setDeltaRadius(1.003);
+		allTargets.add(newTarget6);
+
 	}
 
-	public Main()
-	{
-		initTargetsList();
-	}
-
-	static LokalKoordinatsystem aScreen = new LokalKoordinatsystem(GetScreenWorkingWidth() - 400,
-			GetScreenWorkingHeight());
+	static LokalKoordinatsystem aScreen = new LokalKoordinatsystem(getScreenWorkingWidth(), getScreenWorkingHeight());
 
 	public void paint(Graphics g)
 	{
@@ -80,8 +110,46 @@ public class Main extends JPanel
 
 		for (Target target : allTargets)
 		{
-			target.draw(g2d);
 
+			// remove target if it is too close to border
+			if (target.getDrawP().x < 100) target.dead(true);
+			if (target.getDrawP().x > getScreenWorkingWidth() - 100) target.dead(true);
+
+			if (target.getDrawP().y < 100) target.dead(true);
+			if (target.getDrawP().y > getScreenWorkingHeight() - 100) target.dead(true);
+
+			target.draw(g2d);
+		}
+
+		g.setColor(Color.blue);
+		g.drawRect(100, 100, getScreenWorkingWidth() - 200, getScreenWorkingHeight() - 200);
+		drawScoreBoard(g);
+		drawLinesToTarges(g);
+
+	}
+
+	private void drawScoreBoard(Graphics g)
+	{
+		int i = 1;
+		for (Target target : allTargets)
+		{
+			g.setColor(target.getC());
+			g.fillArc(30 * i, 30, 30, 30, 0, 360);
+			i++;
+		}
+
+	}
+
+	private void drawLinesToTarges(Graphics g)
+	{
+		for (Target target : allTargets)
+		{
+			g.setColor(Color.GRAY);
+			g.drawLine(100, 100, target.getDrawP().x, target.getDrawP().y);
+			g.drawLine(getScreenWorkingWidth() - 100, getScreenWorkingHeight() - 100, target.getDrawP().x,
+					target.getDrawP().y);
+			g.drawLine(100, getScreenWorkingHeight() - 100, target.getDrawP().x, target.getDrawP().y);
+			g.drawLine(getScreenWorkingWidth() - 100, 100, target.getDrawP().x, target.getDrawP().y);
 		}
 
 	}
@@ -121,7 +189,8 @@ public class Main extends JPanel
 			}
 			if ((evt.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
 			{
-				initTargetsList();
+				// initTargetsList();
+				initRandomTargetList();
 
 			}
 		}
