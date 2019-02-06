@@ -52,7 +52,7 @@ public final class Target
 		c = Color.green;
 		deltaRadius = 1;
 		minRadius = 10;
-		maxRadius = 200;
+		maxRadius = randInt(10, 200);
 		deltaMove = new Point(0, 0);
 
 		drawP = new Point(randInt(300, 1300), randInt(200, 700));
@@ -148,7 +148,14 @@ public final class Target
 		// Draw target
 
 		g.setColor(this.c);
-		g.fillArc(drawP.x - (int) radius, drawP.y - (int) radius, (int) getDiameter(), (int) getDiameter(), 0, 360);
+		if (isDead() == false)
+		{
+			g.fillArc(drawP.x - (int) radius, drawP.y - (int) radius, (int) getDiameter(), (int) getDiameter(), 0, 360);
+		}
+		if (isDead() == true)
+		{
+			g.drawArc(drawP.x - (int) radius, drawP.y - (int) radius, (int) getDiameter(), (int) getDiameter(), 0, 360);
+		}
 
 		// drawDebugInfo(g);
 	}

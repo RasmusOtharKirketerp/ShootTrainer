@@ -38,7 +38,7 @@ public class Main extends JPanel
 	static public void initRandomTargetList()
 	{
 		allTargets.removeAll(allTargets);
-		int count = 5;
+		int count = 15;
 
 		//
 		for (int i = 1; i <= count; i++)
